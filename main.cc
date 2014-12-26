@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <vector>
+#include <math.h>
 #include "player.h"
 
 using namespace std;
@@ -36,10 +37,49 @@ int GetHighLowELO(string loworhi){
 	cin >> num;
 	return num;
 }
+// function getWinChance(player, opponent) {
+//   return 1 / (1 + Math.pow(10, ((opponent - player) / 400.0)));
+// }
+double GetWinChance(int p1ELO, int p2ELO){
+	return 1 / (1 + pow(10, ((p1ELO - p2ELO) / 400)));
+}
 
+// function deltaElo(winner, loser, stocks) {
+//   var winChance = getWinChance(winner, loser);
+//   var Kfactor = 32;
+//   return Kfactor * (0.6 + (stocks / 10) - winChance);
+// }
+double DeltaELO(int winnerELO, int loserELO, int stocks){
+	int winChance = GetWinChance(winnerELO, loserELO);
+	const int kFactor = 32;
+	return kFactor * (0.6 + (stocks / 10) - winChance);
+}
+
+
+//The stocks right now are just random, this should be changed depending on ELO
 void PlayGame(Player &p1, Player &p2){
-	//PLAY GAME CODE HERE
-	//TODO
+	int winChance = (rand() % 2) + 1;
+	//cout << "Win chance: " << winChance << endl;
+	double winNum = rand();
+	int numStocks = (rand() % 3) + 1;
+	//cout << "numstocks: " << numStocks << endl;
+	int change = 0;
+	if(winChance == 1){
+		change = DeltaELO(p1.ELO, p2.ELO, numStocks);
+		//cout << "Change1: " << change << endl;
+		p1.ELO += change;
+		p1.numWins++;
+		p2.ELO -= change;
+		p2.numLosses++;
+	}
+	else{
+		change = DeltaELO(p2.ELO, p1.ELO, numStocks);
+		//cout << "Change1: " << change << endl;
+		p2.ELO += change;
+		p2.numWins++;
+		p1.ELO -= change;
+		p1.numLosses++;
+	}
 }
 
 int main(void){
@@ -62,7 +102,7 @@ int main(void){
 	for(int i = 0; i < numPlayers; i++){
 		int tempELO;
 		if(randELO){
-
+			tempELO = (rand() % (highELO - lowELO)) + lowELO;
 		}
 		else {
 			tempELO = 1200;
@@ -88,7 +128,7 @@ int main(void){
 	//We subtract one so we do not get the last player playing themselves or any other shenanigans
 	for(int i = 0; i < numPlayers - 1; i++){
 		for(int q = i + 1; q < numPlayers; q++){
-			PlayGame(players[i], players[q])
+			PlayGame(players[i], players[q]);
 		}
 	}
 

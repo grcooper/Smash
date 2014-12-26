@@ -3,14 +3,14 @@
 
 class Player {
 	int name;
-	int ELO;
-	int numWins;
-	int numLosses;
 	//Returns the wins/games played
 	int RatioWL();
 public:
+	double ELO;
+	double numWins;
+	double numLosses;
 	void PrintInfo();
-	Player(int name, int ELO);
+	Player(int name, double ELO);
 	Player();
 };
 
