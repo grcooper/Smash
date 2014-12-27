@@ -9,7 +9,7 @@ public:
 	double ELO;
 	double numWins;
 	double numLosses;
-	void PrintInfo();
+	void PrintInfo(int w);
 	Player(int name, double ELO);
 	Player();
 };

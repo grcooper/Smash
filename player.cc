@@ -17,10 +17,11 @@ int Player::RatioWL(){
 	}
 }
 
-void Player::PrintInfo(){
-	cout << setw(10) << name;
-	cout << setw(10) << ELO;
-	cout << setw(10) << numWins;
-	cout << setw(10) << numLosses;
-	cout << setw(10) << RatioWL() << endl;
+//Takes in an input which is the width of hte collumns
+void Player::PrintInfo(int w){
+	cout << setw(w) << name;
+	cout << setw(w) << ELO;
+	cout << setw(w) << numWins;
+	cout << setw(w) << numLosses;
+	cout << setw(w) << RatioWL() << endl;
 }
