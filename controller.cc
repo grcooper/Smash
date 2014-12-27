@@ -53,12 +53,14 @@ void Controller::SetHighLowELO(){
 
 //To get info from API later, will fill with code for now
 double GetWinChance(int p1ELO, int p2ELO){
-	//TODO
+	return 1 / (1 + pow(10, ((p1ELO - P2ELO) / 400)));
 }
 
 //To get info from API later, will fill with code for now
 double DeltaELO(int winnerELO, int lowerELO, int stocks){
-	//TODO
+	int winChance = GetWinChance(winnerELO, loserELO);
+	const int kFactor = 32;
+	return kFactor * (0.6 + (stocks / 10) - winChance);
 }
 
 //Public Methods:
