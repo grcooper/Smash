@@ -10,6 +10,8 @@
 
 using namespace std;
 
+const int BASE = 1200;
+const int kFactor = 32;
 //In order in .h file
 
 //Private Methods:
@@ -51,15 +53,25 @@ void Controller::SetHighLowELO(){
 	cout >> "Low ELO is set to: " << lowELO << endl; // Testing
 }
 
+int Controller::GetNumStocks(double winChance){
+	//Solve kFactor * (0.6 + (stocks / 10) - winChance) == 0 for stocks
+	int stocks = 10 * (winChance - 0.6);
+	if(stocks < 1){
+		return 1;
+	}
+	else {
+		return stocks;
+	}
+}
+
 //To get info from API later, will fill with code for now
-double GetWinChance(int p1ELO, int p2ELO){
+double Controller::GetWinChance(int p1ELO, int p2ELO){
 	return 1 / (1 + pow(10, ((p1ELO - P2ELO) / 400)));
 }
 
 //To get info from API later, will fill with code for now
-double DeltaELO(int winnerELO, int lowerELO, int stocks){
-	int winChance = GetWinChance(winnerELO, loserELO);
-	const int kFactor = 32;
+double Controller::DeltaELO(int higherELO, int lowerELO, int stocks){
+	int winChance = GetWinChance(higherELO, lowerELO);
 	return kFactor * (0.6 + (stocks / 10) - winChance);
 }
 
@@ -67,12 +79,42 @@ double DeltaELO(int winnerELO, int lowerELO, int stocks){
 
 //Takes in the two players who are plaing a match
 void Controller::PlayGame(Player &p1, Player &p2){
-	//TODO
-	//Setup:
-		//Calculate the chance of each player winning (From API)
-		//USe above calculation with a random number and find a winner
-		//Calculate the change in ELO using DeltaELO() (from API)
-		//change the ELO and adjust the number of wins/losses accordingly for each player
+	int delta;
+	double winChance;
+	//Currently the number of stocks that they won by is just random
+	//This needs to be changed
+	int numStocks;
+	//Win chance is for the second player
+	//ie 1400 vs 1000, 1400 has a 10/11 chance to win
+	//We need to adjust based on the player with the higher/lower ELO
+	if(p2.ELO > p1.ELO){
+		winChance = GetWinChance(p2.ELO, p1.ELO);
+		double random = (rand() % 101) / 100;
+		numStocks = GetNumStocks(winChance);
+		delta = DeltaELO(p2.ELO, p1.ELO, numStocks);
+		if(random > winChance){
+			p2.WinGame(delta);
+			p1.LoseGame(delta);
+		}
+		else {
+			p1.WinGame(delta);
+			p2.LoseGame(delta);
+		}
+	}
+	else {
+		winChance = GetWinChance(p1.ELO, p2.ELO);
+		double random = (rand() % 101) / 100;
+		numStocks = GetNumStocks(winChance);
+		delta = DeltaELO(p1.ELO, p2.ELO, numStocks);
+		if(random > winChance){
+			p1.WinGame(delta);
+			p2.LoseGame(delta);
+		}
+		else {
+			p2.WinGame(delta);
+			p1.LoseGame(delta);
+		}
+	}
 }
 //Accepts a width to set the collumns to
 void Controller::PrintPlayers(int w){
@@ -89,7 +131,59 @@ void Controller::PrintPlayers(int w){
 	}
 }
 
-//TODO
-Controller::Controller(){}
-//TODO
-Controller::~Controller(){}
+//Call all the methods above to create the controller with all the players
+Controller::Controller(){
+	//Random seed
+	srand(time(0));
+	//Num players setup
+	SetNumPlayers();
+	//Type of ELO setup
+	players = new Player[numPlayers];
+	SetTypeELO();
+	//Low and highELO setup
+	if(randELO){
+		SetHighLowELO();
+	}
+	else {
+		highELO = BASE;
+		lowELO = BASE;
+	}
+	//Set up all the players
+	for(int i = 0; i < numPlayers; i++){
+		//Get a random elo
+		int tempRand;
+		if(randELO){
+			tempRand = rand() % highELO
+		}
+		else {
+			tempRand = 1200;
+		}
+		players[i] = new Player(i, tempRand);
+	}
+
+}
+//Destroy the stack alloctated players and players array
+Controller::~Controller(){
+	for(int i = 0; i < numPlayers; i++){
+		delete players[i];
+	}
+	delete[] players;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

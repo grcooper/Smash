@@ -11,16 +11,15 @@ const int BASEELO = 1200;
 
 class Controller {
 	int numPlayers;
-	std::Map<Player *, int> players;
+	Player **players;
 	int highELO;
 	int lowELO;
 	bool randELO;
-	//int GetNumPlayers();
+	int stocks;	
 	void SetNumPlayers();
 	void SetTypeELO();
-	//bool GetTypeELO();
 	void SetHighLowELO();
-	//int GetHighLowELO(std::string loworhi);
+	void GetNumStocks();
 	//Will need to connect to API later
 	double GetWinChance(int p1ELO, int p2ELO);
 	double DeltaELO(int winnerELO, int loserELO, int stocks);

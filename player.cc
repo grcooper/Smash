@@ -8,6 +8,32 @@ using namespace std;
 Player::Player() : name(0), ELO(1200), numWins(0), numLosses(0){}
 Player::Player(int name, double ELO) : name(name), ELO(ELO), numWins(0), numLosses(0){}
 
+int GetName(){
+	return name;
+}
+
+double GetELO(){
+	return ELO;
+}
+
+double GetWins(){
+	return numWins;
+}
+
+double GetLosses(){
+	return numLosses;
+}
+
+void Player::WinGame(int deltaELO){
+	numWins++;
+	ELO += deltaELO;
+}
+
+void Player::LoseGame(int deltaELO){
+	numLosses++;
+	ELO -= deltaELO;
+}
+
 int Player::RatioWL(){
 	if(numWins + numLosses == 0){
 		return 0;
