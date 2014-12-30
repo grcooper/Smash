@@ -8,19 +8,19 @@ using namespace std;
 Player::Player() : name(0), ELO(1200), numWins(0), numLosses(0){}
 Player::Player(int name, double ELO) : name(name), ELO(ELO), numWins(0), numLosses(0){}
 
-int GetName(){
+int Player::GetName(){
 	return name;
 }
 
-double GetELO(){
+double Player::GetELO(){
 	return ELO;
 }
 
-double GetWins(){
+double Player::GetWins(){
 	return numWins;
 }
 
-double GetLosses(){
+double Player::GetLosses(){
 	return numLosses;
 }
 

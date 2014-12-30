@@ -3,8 +3,8 @@
 #include <string>
 #include <cstdlib>
 #include <time.h>
-#include <vector>
 #include <math.h>
+#include <vector>
 #include "player.h"
 #include "controller.h"
 
@@ -47,10 +47,10 @@ void Controller::SetTypeELO(){
 void Controller::SetHighLowELO(){
 	cout << "Choose the highest ELO that you want to see: " << endl;
 	cin >> highELO;
-	cout >> "High ELO is set to: " << highELO << endl; //Testing
+	cout << "High ELO is set to: " << highELO << endl; //Testing
 	cout << "Choose the lowest ELO that you want to see: " << endl;
 	cin >> lowELO;
-	cout >> "Low ELO is set to: " << lowELO << endl; // Testing
+	cout << "Low ELO is set to: " << lowELO << endl; // Testing
 }
 
 int Controller::GetNumStocks(double winChance){
@@ -66,7 +66,7 @@ int Controller::GetNumStocks(double winChance){
 
 //To get info from API later, will fill with code for now
 double Controller::GetWinChance(int p1ELO, int p2ELO){
-	return 1 / (1 + pow(10, ((p1ELO - P2ELO) / 400)));
+	return 1 / (1 + pow(10, ((p1ELO - p2ELO) / 400)));
 }
 
 //To get info from API later, will fill with code for now
@@ -74,8 +74,6 @@ double Controller::DeltaELO(int higherELO, int lowerELO, int stocks){
 	int winChance = GetWinChance(higherELO, lowerELO);
 	return kFactor * (0.6 + (stocks / 10) - winChance);
 }
-
-//Public Methods:
 
 //Takes in the two players who are plaing a match
 void Controller::PlayGame(Player &p1, Player &p2){
@@ -87,12 +85,12 @@ void Controller::PlayGame(Player &p1, Player &p2){
 	//Win chance is for the second player
 	//ie 1400 vs 1000, 1400 has a 10/11 chance to win
 	//We need to adjust based on the player with the higher/lower ELO
-	if(p2.ELO > p1.ELO){
-		winChance = GetWinChance(p2.ELO, p1.ELO);
-		double random = (rand() % 101) / 100;
+	if(p2.GetELO() > p1.GetELO()){
+		winChance = GetWinChance(p2.GetELO(), p1.GetELO());
+		int random = rand() % 101;
 		numStocks = GetNumStocks(winChance);
-		delta = DeltaELO(p2.ELO, p1.ELO, numStocks);
-		if(random > winChance){
+		delta = DeltaELO(p2.GetELO(), p1.GetELO(), numStocks);
+		if(random > (winChance * 100)){
 			p2.WinGame(delta);
 			p1.LoseGame(delta);
 		}
@@ -102,11 +100,11 @@ void Controller::PlayGame(Player &p1, Player &p2){
 		}
 	}
 	else {
-		winChance = GetWinChance(p1.ELO, p2.ELO);
-		double random = (rand() % 101) / 100;
+		winChance = GetWinChance(p1.GetELO(), p2.GetELO());
+		int random = rand() % 101;
 		numStocks = GetNumStocks(winChance);
-		delta = DeltaELO(p1.ELO, p2.ELO, numStocks);
-		if(random > winChance){
+		delta = DeltaELO(p1.GetELO(), p2.GetELO(), numStocks);
+		if(random > (winChance * 100)){
 			p1.WinGame(delta);
 			p2.LoseGame(delta);
 		}
@@ -116,6 +114,21 @@ void Controller::PlayGame(Player &p1, Player &p2){
 		}
 	}
 }
+
+void Controller::SortELO(){
+	//TODO
+}
+
+
+void Controller::PlayAll(){
+	for(int i = 0; i < numPlayers - 1; i++){
+		for(int q = (i + 1); q < numPlayers; q++){
+			PlayGame(*players[i], *players[q]);
+		}
+	}
+	PrintPlayers(10);
+}
+
 //Accepts a width to set the collumns to
 void Controller::PrintPlayers(int w){
 	//May want to ask how the user wants the info sorted
@@ -126,8 +139,8 @@ void Controller::PrintPlayers(int w){
 	cout << setw(w) << "Wins" ;
 	cout << setw(w) << "Losses" ;
 	cout << setw(w) << "W/L" << endl;
-	for(map<Player *, int>::iterator it = players.begin(); it != players.end(); it++){
-		it->first->PrintInfo(w);
+	for(int i = 0; i < numPlayers; i++){
+		players[i]->PrintInfo(w);
 	}
 }
 
@@ -138,7 +151,7 @@ Controller::Controller(){
 	//Num players setup
 	SetNumPlayers();
 	//Type of ELO setup
-	players = new Player[numPlayers];
+	players = new Player *[numPlayers];
 	SetTypeELO();
 	//Low and highELO setup
 	if(randELO){
@@ -153,14 +166,14 @@ Controller::Controller(){
 		//Get a random elo
 		int tempRand;
 		if(randELO){
-			tempRand = rand() % highELO
+			tempRand = rand() % highELO;
 		}
 		else {
 			tempRand = 1200;
 		}
 		players[i] = new Player(i, tempRand);
 	}
-
+	PrintPlayers(10);
 }
 //Destroy the stack alloctated players and players array
 Controller::~Controller(){
