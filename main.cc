@@ -14,17 +14,25 @@ int main(void){
 
 	char choice;
 	while(true){
-		cout << "Press [y] to make all the players play each other" << endl;
-		cout << "Press [s] to sort the list by ELO" << endl;
+		cout << "Press [e] to make all the players play each other" << endl;
+		cout << "Press [t] to play a tournament with all the players" << endl;
+		cout << "Press [s] to sort the list by ELO and display the players" << endl;
 		cout << "Press [x] to exit" << endl;
 		cin >> choice;
-		if(choice == 'y'){
+		if(choice == 'e'){
 			c.PlayAll();
+		}
+		else if (choice == 'r'){
+			//All players play according to ELO
+		}
+		else if (choice == 't'){
+			//All Players play in a tournament and announces the winner
+			c.PlayTourney();
 		}
 		else if (choice == 's'){
 			c.SortELO();
 		}
-		else  if(choice == 'x'){
+		else if(choice == 'x'){
 			break;
 		}
 		else {

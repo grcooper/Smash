@@ -76,7 +76,8 @@ double Controller::DeltaELO(int higherELO, int lowerELO, int stocks){
 }
 
 //Takes in the two players who are plaing a match
-void Controller::PlayGame(Player &p1, Player &p2){
+//Returns the name of the winner
+int Controller::PlayGame(Player &p1, Player &p2){
 	int delta;
 	double winChance;
 	//Currently the number of stocks that they won by is just random
@@ -93,10 +94,12 @@ void Controller::PlayGame(Player &p1, Player &p2){
 		if(random > (winChance * 100)){
 			p2.WinGame(delta);
 			p1.LoseGame(delta);
+			return p2.GetName();
 		}
 		else {
 			p1.WinGame(delta);
 			p2.LoseGame(delta);
+			return p1.GetName();
 		}
 	}
 	else {
@@ -107,10 +110,12 @@ void Controller::PlayGame(Player &p1, Player &p2){
 		if(random > (winChance * 100)){
 			p1.WinGame(delta);
 			p2.LoseGame(delta);
+			return p1.GetName();
 		}
 		else {
 			p2.WinGame(delta);
 			p1.LoseGame(delta);
+			return p2.GetName();
 		}
 	}
 }
@@ -149,6 +154,34 @@ void Controller::PlayAll(){
 		}
 	}
 	PrintPlayers(10);
+}
+
+void Controller::PlayTourney(){
+	//Sort players first so its not uneven
+	SortELO();
+	int tNumPlayers = numPlayers;
+	if(numPlayers % 2 != 0){
+		tNumPlayers--;
+		cout << "There is an odd number of players so the lowest ELO player will not play" << endl;
+	}
+	int playNums[tNumPlayers];
+	for(int i = 0; i < tNumPlayers; i++){
+		playNums[i] = players[i]->GetName();
+	}
+	//Play until there is one player left
+	while(tNumPlayers != 1){
+		for(int q = 0; q < (tNumPlayers / 2); q++){
+			int winner = PlayGame(*players[playNums[q * 2]], *players[playNums[(q * 2) + 1]]);
+			playNums[q] = winner;
+		}
+		tNumPlayers = tNumPlayers / 2;
+	}
+	cout << "The Winner is Player: " << playNums[0] << endl;
+	PrintPlayers(10);
+}
+
+void Controller::PlayByELO(){
+	cout << "Not available currently" << endl;
 }
 
 //Accepts a width to set the collumns to

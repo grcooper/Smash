@@ -22,12 +22,14 @@ class Controller {
 	//Will need to connect to API later
 	double GetWinChance(int p1ELO, int p2ELO);
 	double DeltaELO(int winnerELO, int loserELO, int stocks);
-	void PlayGame(Player &p1, Player &p2);
+	int PlayGame(Player &p1, Player &p2);
 	void Swap(int p1, int p2);
 	int FindMax(int start);
 public:
 	void SortELO();
 	void PlayAll();
+	void PlayTourney();
+	void PlayByELO();
 	void PrintPlayers(int w);
 	Controller();
 	~Controller();
