@@ -23,7 +23,8 @@ class Controller {
 	double GetWinChance(int p1ELO, int p2ELO);
 	double DeltaELO(int winnerELO, int loserELO, int stocks);
 	void PlayGame(Player &p1, Player &p2);
-	int Partition(int left, int right);
+	void Swap(int p1, int p2);
+	int FindMax(int start);
 public:
 	void SortELO();
 	void PlayAll();

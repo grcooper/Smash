@@ -15,15 +15,15 @@ int main(void){
 	char choice;
 	while(true){
 		cout << "Press [y] to make all the players play each other" << endl;
-		//cout << "Press [s] to sort the list by ELO" << endl;
+		cout << "Press [s] to sort the list by ELO" << endl;
 		cout << "Press [x] to exit" << endl;
 		cin >> choice;
 		if(choice == 'y'){
 			c.PlayAll();
 		}
-		//else if (choice == 's'){
-		//	c.SortELO();
-		//}
+		else if (choice == 's'){
+			c.SortELO();
+		}
 		else  if(choice == 'x'){
 			break;
 		}

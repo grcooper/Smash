@@ -115,10 +115,32 @@ void Controller::PlayGame(Player &p1, Player &p2){
 	}
 }
 
-void Controller::SortELO(){
-	//TODO
+//SORTING using selection sort
+void Controller::Swap(int p1, int p2){
+	Player *tmp = players[p1];
+	players[p1] = players[p2];
+	players[p2] = tmp;
 }
 
+int Controller::FindMax(int start){
+	int maxELO = players[start]->GetELO();
+	int pos = start;
+	for(int i = pos; i < numPlayers; i++){
+		if(maxELO < players[i]->GetELO()){
+			maxELO = players[i]->GetELO();
+			pos = i;
+		}
+	}
+	return pos;
+}
+void Controller::SortELO(){
+	for(int i = 0; i < numPlayers; i++){
+		int max = FindMax(i);
+		Swap(i, max);
+	}
+	PrintPlayers(10);
+}
+//END OF SORTING
 
 void Controller::PlayAll(){
 	for(int i = 0; i < numPlayers - 1; i++){
