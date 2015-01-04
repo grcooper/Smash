@@ -181,7 +181,12 @@ void Controller::PlayTourney(){
 }
 
 void Controller::PlayByELO(){
-	cout << "Not available currently" << endl;
+	//Sort and play player next to you
+	SortELO();
+	for(int i = 0; i < (numPlayers / 2); i++){
+		PlayGame(*players[i * 2], *players[(i * 2) + 1]);
+	}
+	PrintPlayers(10);
 }
 
 //Accepts a width to set the collumns to
